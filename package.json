@@ -1,0 +1,25 @@
+{
+  "name": "backend-m01004251",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/adamlol12345/Backend-M01004251#readme",
+  "bugs": {
+    "url": "https://github.com/adamlol12345/Backend-M01004251/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adamlol12345/Backend-M01004251.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.3.0"
+  }
+}
