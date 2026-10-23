@@ -4,8 +4,24 @@ var app = express();
 
 var cors = require("cors");
 
+var path = require("path");
+
 app.use(cors());
 app.use(express.json());
+
+var publicPath = path.resolve(__dirname, "staticFiles");
+
+
+app.use(function(request, response, next) {
+    console.log("In comes a request to: " + request.method + " " + request.url);
+        next();
+});
+
+app.use("/images", express.static(publicPath));
+
+app.use("/images", function(request, response){
+    response.status(404).send("Image not found!");
+});
 
 let productsArray = [
 {
@@ -14,7 +30,6 @@ let productsArray = [
                             location: "Hendon",
                             price: "£120",
                             spaces: 5,
-                            image: "images/IT.jpeg",
                             alt: "Information Technology image"
                         },
                         {
@@ -23,7 +38,6 @@ let productsArray = [
                             location: "Brighton",
                             price: "£50",
                             spaces: 5,
-                            image: "images/Mathematics.jpg",
                             alt: "Mathematics image"
                         },
                         {
@@ -32,7 +46,6 @@ let productsArray = [
                             location: "Cambridge",
                             price: "£60",
                             spaces: 5,
-                            image: "images/Science.avif",
                             alt: "Science image"
                         },
                         {
@@ -41,7 +54,6 @@ let productsArray = [
                             location: "Luton",
                             price: "£90",
                             spaces: 5,
-                            image: "images/PE.jpg",
                             alt: "Physical Education image"
                         },
                         {
@@ -50,7 +62,6 @@ let productsArray = [
                             location: "Barnet",
                             price: "£80",
                             spaces: 5,
-                            image: "images/RE.png",
                             alt: "Religious Education image"
                         },
                         {
@@ -59,7 +70,6 @@ let productsArray = [
                             location: "Brentford",
                             price: "£100",
                             spaces: 5,
-                            image: "images/English.jpg",
                             alt: "English image"
                         },
                         {
@@ -68,7 +78,6 @@ let productsArray = [
                             location: "Chelsea",
                             price: "£95",
                             spaces: 5,
-                            image: "images/History.jpg",
                             alt: "History image"
                         },
                         {
@@ -77,7 +86,6 @@ let productsArray = [
                             location: "Hendon",
                             price: "£110",
                             spaces: 5,
-                            image: "images/Music.jpg",
                             alt: "Music image"
                         },
                         {
@@ -86,7 +94,6 @@ let productsArray = [
                             location: "Hendon",
                             price: "£90",
                             spaces: 5,
-                            image: "images/Art.avif",
                             alt: "Art image"
                         },
                         {
@@ -95,21 +102,34 @@ let productsArray = [
                             location: "Hendon",
                             price: "£95",
                             spaces: 5,
-                            image: "images/Geography.jpg",
                             alt: "Geography image"
                         }
 ];
 
-app.get("/", function(request, response) {
+app.get("/lessons", function(request, response) {
     console.log("In comes a request to: " + request.url);
     response.json(productsArray);
 });
 
-app.use(function(request, response) {
-    console.log("In comes a request to: " + request.url);
-    response.end("Hello, world!");
+app.post("/orders", function(request, response) {
+    var body = request.body;
+
+    console.log("Order received");
+    console.log("Name: " + body.fullname);
+    console.log("Number: " + body.number);
+    console.log("Lesson IDs:" + body.lessonIDs);
+    console.log("Total Price: £" + body.totalPrice);
+
+
+    response.json({ message: "Order received!" });
 });
 
-app.listen(8080, function() {
-console.log("App started on port 8080");
+// 404 Error 
+app.use(function(request, response, next) {
+    response.status(404).send("Page not found!");
+});
+
+
+app.listen(3000, function() {
+console.log("App started on port 3000");
 });
