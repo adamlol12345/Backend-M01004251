@@ -106,22 +106,58 @@ let productsArray = [
                         }
 ];
 
-app.get("/lessons", function(request, response) {
+require("dotenv").config({ path: "./config.env" });
+const { MongoClient, ObjectId } = require("mongodb");
+const uri = process.env.MONGODB_PREFIX + process.env.MONGODB_USERNAME + ":" +
+process.env.MONGODB_PASSWORD + process.env.MONGODB_URL;
+const client = new MongoClient(uri);
+const db=client.db("Webstore");
+
+
+app.get("/lessons", async function(request, response) {
     console.log("In comes a request to: " + request.url);
-    response.json(productsArray);
+
+    let collection = await db.collection("lessons");
+    let results = await collection.find({}).toArray();
+    response.send(results);
 });
 
-app.post("/orders", function(request, response) {
+app.post("/orders", async function(request, response) {
     var body = request.body;
+
+    let collection = db.collection("orders");
+    let result = await collection.insertOne(body);
 
     console.log("Order received");
     console.log("Name: " + body.fullname);
     console.log("Number: " + body.number);
-    console.log("Lesson IDs:" + body.lessonIDs);
+    console.log("Lesson IDs: " + body.lessonIDs);
     console.log("Total Price: £" + body.totalPrice);
 
+    response.json({ message: "Order received!", result: result });
+});
 
-    response.json({ message: "Order received!" });
+app.put("/lessons/:_id", async function(request, response) {
+    try {
+        let collection = db.collection("lessons");
+        let tempid = request.params._id;
+
+        const query = { _id: new ObjectId(tempid) };
+
+        const updates = {
+            $set: request.body
+        };
+
+        const result = await collection.updateOne(query, updates);
+
+        console.log("Lesson update result:", result);
+
+        response.send(result);
+
+    } catch (error) {
+        console.error("Error updating lesson:", error);
+        response.status(500).send(error.message);
+    }
 });
 
 // 404 Error 
